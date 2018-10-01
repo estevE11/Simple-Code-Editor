@@ -6,11 +6,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="803a4005-d7e7-437d-8d08-0267712110c7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/schemes/scheme_default_clear.txt" beforeDir="false" afterPath="$PROJECT_DIR$/config/schemes/scheme_default_clear.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/schemes/scheme_default_dark.txt" beforeDir="false" afterPath="$PROJECT_DIR$/config/schemes/scheme_default_dark.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/syntax/syntax_py.txt" beforeDir="false" afterPath="$PROJECT_DIR$/config/syntax/syntax_py.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Simple Code Editor/com/coconaut/sce/text_area/TextArea.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Simple Code Editor/com/coconaut/sce/text_area/TextArea.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/coconaut/sce/text_area/TextArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/coconaut/sce/text_area/TextArea.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -35,13 +30,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="659" />
+          <entry key="java" value="1083" />
           <entry key="txt" value="185" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="659" />
+          <entry key="JAVA" value="1083" />
           <entry key="PLAIN_TEXT" value="185" />
         </counts>
       </usages-collector>
@@ -71,25 +66,25 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/coconaut/sce/text_area/TextArea.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="157">
-              <caret line="481" selection-start-line="481" selection-end-line="481" />
+            <state relative-caret-position="204">
+              <caret line="112" column="74" selection-start-line="112" selection-start-column="74" selection-end-line="112" selection-end-column="74" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1183#1184#0" expanded="true" />
                 <element signature="e#1205#1206#0" expanded="true" />
-                <element signature="e#20048#20049#0" expanded="true" />
-                <element signature="e#20080#20081#0" expanded="true" />
-                <element signature="e#20415#20416#0" expanded="true" />
-                <element signature="e#20452#20453#0" expanded="true" />
+                <element signature="e#20260#20261#0" expanded="true" />
+                <element signature="e#20292#20293#0" expanded="true" />
+                <element signature="e#20627#20628#0" expanded="true" />
+                <element signature="e#20664#20665#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/schemes/scheme_default_dark.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="128">
@@ -273,8 +268,8 @@
         <option value="$PROJECT_DIR$/src/com/coconaut/sce/gfx/MainCanvas.java" />
         <option value="$PROJECT_DIR$/config/schemes/scheme_default_clear.txt" />
         <option value="$PROJECT_DIR$/config/syntax/syntax_py.txt" />
-        <option value="$PROJECT_DIR$/src/com/coconaut/sce/text_area/TextArea.java" />
         <option value="$PROJECT_DIR$/config/schemes/scheme_default_dark.txt" />
+        <option value="$PROJECT_DIR$/src/com/coconaut/sce/text_area/TextArea.java" />
       </list>
     </option>
   </component>
@@ -597,22 +592,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/coconaut/sce/text_area/TextArea.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="481" selection-start-line="481" selection-end-line="481" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1183#1184#0" expanded="true" />
-            <element signature="e#1205#1206#0" expanded="true" />
-            <element signature="e#20048#20049#0" expanded="true" />
-            <element signature="e#20080#20081#0" expanded="true" />
-            <element signature="e#20415#20416#0" expanded="true" />
-            <element signature="e#20452#20453#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/schemes/scheme_default_clear.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="128">
@@ -624,6 +603,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="128">
           <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/coconaut/sce/text_area/TextArea.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="112" column="74" selection-start-line="112" selection-start-column="74" selection-end-line="112" selection-end-column="74" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1183#1184#0" expanded="true" />
+            <element signature="e#1205#1206#0" expanded="true" />
+            <element signature="e#20260#20261#0" expanded="true" />
+            <element signature="e#20292#20293#0" expanded="true" />
+            <element signature="e#20627#20628#0" expanded="true" />
+            <element signature="e#20664#20665#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -25,6 +25,7 @@ public class TextArea extends KeyboardListener {
 
     private boolean saved = false;
     private FileContent current_file = new FileContent();
+    private String char_comment = "";
 
     private int viewY = 0;
     private int offsetY = 0;
@@ -107,9 +108,13 @@ public class TextArea extends KeyboardListener {
             String[] line = this.current_file.getLine(i).split(" ");
             String[] words = this.current_file.getLine(i).split("[^a-zA-Z0-9]");
             int len = 0;
+            boolean isComment = false;
             for(int j = 0; j < line.length; j++) {
                 String word = line[j] + (j == line.length - 1 ? "" : " ");
-                canvas.renderText(word, OFF_LEFT + len, 14 + i * this.LINE_H + this.offsetY, 14, this.getSyntax(line[j]));
+                if(!this.char_comment.equals("") && this.char_comment != null && line[j].substring(0,this.char_comment.length()-1).equals(this.char_comment)){
+                    isComment = true;
+                }
+                canvas.renderText(word, OFF_LEFT + len, 14 + i * this.LINE_H + this.offsetY, 14, !isComment ? this.getSyntax(line[j]) : this.scheme.get("sy_comment"));
                 len += canvas.calcTextWidth(word);
             }
         }
@@ -476,9 +481,12 @@ public class TextArea extends KeyboardListener {
 
         String[] file = Utils.readFileByLine("config/syntax/syntax_" + ext + ".txt");
         this.syntax = new Hashtable<>();
-        for(String line : file) {
-            //System.out.println(line);
-            //System.out.println(this.scheme.get("sy_key_words").getBlue());
+        for(int i = 0; i < file.length; i++) {
+            String line = file[i];
+            if(i == 0) {
+                this.char_comment = line;
+                continue;
+            }
             this.syntax.put(line, this.scheme.get("sy_key_words"));
         }
     }
