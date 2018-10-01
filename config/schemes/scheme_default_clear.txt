@@ -6,3 +6,6 @@ txt_area_font_on_idx 255 255 255
 txt_area_selection 0 120 255
 info_bar_bg 200 200 0
 info_bar_font 0 0 0
+sy_key_words 170 100 0
+sy_comment 0 200 0
+sy_string 0 255 0

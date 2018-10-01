@@ -57,13 +57,13 @@ public class TextArea extends KeyboardListener {
     public void update(long dt) {
         this.idx_t+=dt/2;
         if(this.idx_t > idx_timing) this.idx_t = 0;
-        
+
         //Offset
         //if(this.viewY*this.LINE_H > this.current_file.length() - this.LINE_H) this.offsetY = this.current_file.length() - this.LINE_H;
         if(this.viewY < 0) this.viewY = 0;
 
         this.offsetY = this.viewY * -1;
-        
+
         this.cmd_input.update();
     }
 
@@ -106,9 +106,11 @@ public class TextArea extends KeyboardListener {
         for(int i = 0; i < this.current_file.length(); i++) {
             String[] line = this.current_file.getLine(i).split(" ");
             String[] words = this.current_file.getLine(i).split("[^a-zA-Z0-9]");
+            int len = 0;
             for(int j = 0; j < line.length; j++) {
-                System.out.println(line[j]);
-                canvas.renderText(line[j] + (j == line.length - 1 ? "" : " "), OFF_LEFT, 14 + i * this.LINE_H + this.offsetY, 14, this.getSyntax(line[j]));
+                String word = line[j] + (j == line.length - 1 ? "" : " ");
+                canvas.renderText(word, OFF_LEFT + len, 14 + i * this.LINE_H + this.offsetY, 14, this.getSyntax(line[j]));
+                len += canvas.calcTextWidth(word);
             }
         }
 
@@ -147,33 +149,33 @@ public class TextArea extends KeyboardListener {
             switch(keycode) {
                 case 8:
                     this.remove_chars(2);
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 17:
                 case 18:
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 67://COPY
                     this.copy(this.selec_start, this.selec_end);
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
-                case 83:
+                case 83://SAVE
                     this.saveFile();
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 86://PASTE
                     this.paste(Utils.get_clipboard());
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
 
                     //Arrows
                 case 38:
                     this.viewY -= this.LINE_H;
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 40:
                     this.viewY += this.LINE_H;
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 default:
                     this.cmd_input.openCommand(keycode);
@@ -185,19 +187,19 @@ public class TextArea extends KeyboardListener {
                     //Arrows
                     case 38:
                         this.move_selection(0, -1);
-                        to_add = "NaN";
+                        to_add = ".Nan.";
                         break;
                     case 40:
                         this.move_selection(0, 1);
-                        to_add = "NaN";
+                        to_add = ".Nan.";
                         break;
                     case 37:
                         this.move_selection(-1, 0);
-                        to_add = "NaN";
+                        to_add = ".Nan.";
                         break;
                     case 39:
                         this.move_selection(1, 0);
-                        to_add = "NaN";
+                        to_add = ".Nan.";
                         break;
                 }
             }
@@ -205,43 +207,46 @@ public class TextArea extends KeyboardListener {
             switch(keycode) {
                 case 10:
                     this.add_line();
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 8:
                     this.remove_chars(1);
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 155://INSERT
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 127://SUPR
                     this.remove_chars(-1);
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 35://FIN
-                    to_add = "NaN";
+                    to_add = ".Nan.";
+                    break;
+                case 9://TAB
+                    to_add = ".TaB.";
                     break;
 
                 //Arrows
                 case 38:
                     move_line(-1);
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 40:
                     move_line(1);
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 37:
                     move_idx(-1);
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
                 case 39:
                     move_idx(1);
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
 
 
-                //NaN Characters :D
+                //.Nan. Characters :D
                 case 33:
                 case 34:
                 case 16:
@@ -264,15 +269,19 @@ public class TextArea extends KeyboardListener {
                 case 19:
                 case 525:
                 case 20:
-                    to_add = "NaN";
+                    to_add = ".Nan.";
                     break;
             }
             if(!shift)selec_follow_idx();
         }
 
         System.out.println(to_add);
-        if(!to_add.equals("NaN")){
-            add_char(to_add);
+        if(!to_add.equals(".Nan.")) {
+            if(to_add.equals(".TaB.")) {
+                for (int i = 0; i < 4; i++)
+                    this.add_char(" ");
+            } else
+                add_char(to_add);
             this.saved = false;
         }
 
@@ -454,6 +463,7 @@ public class TextArea extends KeyboardListener {
         for(String line : file) {
             String[] prop = line.split(" ");
             this.scheme.put(prop[0], new Color(Integer.valueOf(prop[1]), Integer.valueOf(prop[2]), Integer.valueOf(prop[3])));
+            System.out.println(prop[0]);
         }
         System.out.println("Scheme loaded: " + name);
     }
@@ -465,10 +475,11 @@ public class TextArea extends KeyboardListener {
         }
 
         String[] file = Utils.readFileByLine("config/syntax/syntax_" + ext + ".txt");
+        this.syntax = new Hashtable<>();
         for(String line : file) {
-            this.syntax = new Hashtable<>();
-            String[] prop = line.split(" ");
-            this.syntax.put(prop[0], new Color(Integer.valueOf(prop[1]), Integer.valueOf(prop[2]), Integer.valueOf(prop[3])));
+            //System.out.println(line);
+            //System.out.println(this.scheme.get("sy_key_words").getBlue());
+            this.syntax.put(line, this.scheme.get("sy_key_words"));
         }
     }
 
