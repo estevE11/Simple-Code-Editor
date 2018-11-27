@@ -61,7 +61,20 @@ public class Utils {
         return "";
     }
 
-    public static void writeFile(String str, String path) {
+    public static void create_file(String path) {
+        File f = new File(path);
+        try {
+            if(f.createNewFile()) {
+                System.out.println("File created succesfully!");
+            } else {
+                JOptionPane.showMessageDialog(null, "File already exists!", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void write_file(String str, String path) {
         try {
             FileWriter fw = new FileWriter(path);
             fw.write(str);
@@ -92,7 +105,11 @@ public class Utils {
         return null;
     }
 */
-    public static String[] readFileByLine(String path) {
+    public static boolean file_exists(String path) {
+        return new File(path).exists();
+    }
+
+    public static String[] read_file_by_line(String path) {
         System.out.println(path);
         try {
             FileReader fr = new FileReader(path);
@@ -116,7 +133,11 @@ public class Utils {
     }
 
     public static String[] get_lines_from_raw_text(String text) {
-        return text.split("\n");
+        String[] lines = text.split("\n");
+        if(text.endsWith("\n")) {
+            Utils.push(lines, "");
+        }
+        return lines;
     }
 
     public static String get_file_name_from_path(String path) {
@@ -135,11 +156,11 @@ public class Utils {
         return p[p.length-1];
     }
 
-    public static boolean isNumeric(String s) {
+    public static boolean is_numeric(String s) {
         return s.matches("-?\\d+(\\.\\d+)?");
     }
 
-    public static boolean isPositive(int x) {
+    public static boolean is_positive(int x) {
         if(x > -1) return true;
         return false;
     }

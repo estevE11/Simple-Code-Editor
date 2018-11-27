@@ -9,6 +9,6 @@ public class CommandOpenFile extends Command {
     }
 
     public void exec(String args[]) {
-        this.text_area.openFile(args[0]);
+        this.text_area.open_file(args[0]);
     }
 }

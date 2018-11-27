@@ -3,7 +3,10 @@ package com.coconaut.sce.text_area;
 import com.coconaut.sce.gfx.MainCanvas;
 import com.coconaut.sce.input.KeyboardListener;
 import com.coconaut.sce.text_area.command.Command;
+import com.coconaut.sce.text_area.command.CommandLoadScheme;
+import com.coconaut.sce.text_area.command.CommandNewFile;
 import com.coconaut.sce.text_area.command.CommandOpenFile;
+import com.coconaut.sce.utils.Log;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -53,6 +56,8 @@ public class CommandInput extends KeyboardListener {
 
     public void initCommands() {
         this.addCommand(79, new CommandOpenFile(this.text_area));
+        this.addCommand(78, new CommandNewFile(this.text_area));
+        this.addCommand(73, new CommandLoadScheme(this.text_area));
     }
 
     private void addCommand(int keybind, Command cmd) {
@@ -70,7 +75,7 @@ public class CommandInput extends KeyboardListener {
     }
 
     public void openCommand(int keybind) {
-        System.out.println("-" + keybind);
+        Log.debug("-" + keybind);
         Command cmd = this.commands.get(keybind);
         if(cmd != null) {
             this.command = cmd;

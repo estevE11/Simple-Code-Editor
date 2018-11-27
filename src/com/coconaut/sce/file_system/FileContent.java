@@ -7,7 +7,7 @@ public class FileContent {
     private String path = "NaN";
 
     public void save() {
-        Utils.writeFile(this.getRawText(), this.path);
+        Utils.write_file(this.getRawText(), this.path);
     }
 
     public String getName() {
@@ -55,7 +55,12 @@ public class FileContent {
     }
 
     public void setPath(String path) {
-        this.setText(Utils.readFileByLine(path));
+        if(Utils.file_exists(path)) {
+            this.setText(Utils.read_file_by_line(path));
+        } else{
+            Utils.create_file(path);
+            this.setTextFromRawText(" ");
+        }
         this.path = path;
     }
 }

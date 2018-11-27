@@ -2,9 +2,7 @@ package com.coconaut.sce.main;
 
 import com.coconaut.sce.gfx.MainCanvas;
 import com.coconaut.sce.input.KeyboardInput;
-import com.coconaut.sce.text_area.CommandInput;
 import com.coconaut.sce.text_area.TextArea;
-import com.coconaut.sce.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +31,7 @@ public class Main implements Runnable {
         this.kb.add(this.text_area.getCmdInpt());
         canvas.addKeyListener(this.kb);
 
-        this.text_area.openFile("C:/Users/Cocon/Desktop/b.txt");
+        this.text_area.open_file("/home/esteve/Escritorio/b.txt");
     }
 
     @Override

@@ -3,10 +3,12 @@ package com.coconaut.sce.text_area;
 import com.coconaut.sce.file_system.FileContent;
 import com.coconaut.sce.gfx.MainCanvas;
 import com.coconaut.sce.input.KeyboardListener;
+import com.coconaut.sce.utils.Log;
 import com.coconaut.sce.utils.Utils;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.StringBufferInputStream;
 import java.util.Hashtable;
 
 public class TextArea extends KeyboardListener {
@@ -51,8 +53,8 @@ public class TextArea extends KeyboardListener {
         this.cmd_input = new CommandInput(this);
         this.cmd_input.initCommands();
         this.current_file.setLine(0, "");
-        this.loadScheme("default_dark");
-        this.loadSyntax("txt");
+        this.load_scheme("default_dark");
+        this.load_syntax("txt");
     }
 
     public void update(long dt) {
@@ -63,7 +65,7 @@ public class TextArea extends KeyboardListener {
         //if(this.viewY*this.LINE_H > this.current_file.length() - this.LINE_H) this.offsetY = this.current_file.length() - this.LINE_H;
         if(this.viewY < 0) this.viewY = 0;
 
-        this.offsetY = this.viewY * -1;
+        this.offsetY = this.viewY * this.LINE_H * -1;
 
         this.cmd_input.update();
     }
@@ -74,7 +76,7 @@ public class TextArea extends KeyboardListener {
 
         if(this.idx < 0) this.idx = 0;
 
-        //System.out.println(viewY);
+        //Log.debug(viewY);
 
         canvas.fill(0, 0, canvas.getWidth(), canvas.getHeight(), this.scheme.get("txt_area_bg"));
 
@@ -119,7 +121,7 @@ public class TextArea extends KeyboardListener {
             }
         }
 
-        //POinter
+        //Pointer
         if(idx_t < idx_timing/2 && canvas.hasFocus() && this.onFocus) {
             canvas.fill((this.idx+1) * this.FONT_W, this.line*this.LINE_H + this.offsetY, 7, this.LINE_H, this.scheme.get("txt_area_idx"));
             if(this.idx < this.current_file.getLine(line).length() && this.current_file.getLine(line) != null && this.current_file.getLine(line).length() > 0){
@@ -149,7 +151,7 @@ public class TextArea extends KeyboardListener {
 
     private void procces_input(String input_char, int keycode, boolean ctrl, boolean shift) {
         String to_add = input_char;
-        System.out.println(input_char);
+        Log.debug(input_char);
         if(ctrl) {
             switch(keycode) {
                 case 8:
@@ -165,7 +167,7 @@ public class TextArea extends KeyboardListener {
                     to_add = ".Nan.";
                     break;
                 case 83://SAVE
-                    this.saveFile();
+                    this.save_file();
                     to_add = ".Nan.";
                     break;
                 case 86://PASTE
@@ -175,11 +177,11 @@ public class TextArea extends KeyboardListener {
 
                     //Arrows
                 case 38:
-                    this.viewY -= this.LINE_H;
+                    this.viewY--;
                     to_add = ".Nan.";
                     break;
                 case 40:
-                    this.viewY += this.LINE_H;
+                    this.viewY++;
                     to_add = ".Nan.";
                     break;
                 default:
@@ -270,6 +272,7 @@ public class TextArea extends KeyboardListener {
                 case 121:
                 case 122:
                 case 123:
+                case 65406:
                 case 145:
                 case 19:
                 case 525:
@@ -280,7 +283,7 @@ public class TextArea extends KeyboardListener {
             if(!shift)selec_follow_idx();
         }
 
-        System.out.println(to_add);
+        Log.debug(to_add);
         if(!to_add.equals(".Nan.")) {
             if(to_add.equals(".TaB.")) {
                 for (int i = 0; i < 4; i++)
@@ -292,8 +295,8 @@ public class TextArea extends KeyboardListener {
 
         if(this.idx < 0) this.idx = 0;
 
-        System.out.println(keycode);
-        System.out.println("----");
+        Log.debug(keycode);
+        Log.debug("----");
     }
 
     private void selec_follow_idx() {
@@ -381,6 +384,16 @@ public class TextArea extends KeyboardListener {
                 String fstpart = this.current_file.getLine(line).substring(0, idx);
                 String scpart = this.current_file.getLine(line).substring(idx+chars, this.current_file.getLine(line).length());
                 this.current_file.setLine(line, fstpart + scpart);
+
+                //When idx is at the end
+                if(this.idx+1 == this.current_file.getLine(this.line).length() && this.line+1 != this.current_file.length()) {
+                    String current_line = this.current_file.getLine(this.line);
+                    this.current_file.setLine(this.line, current_line + this.current_file.getLine(this.line+1));
+                    this.current_file.setText(Utils.pop(this.current_file.getText(), this.line+1));
+                }
+            // If line is empty and hits SUPR
+            } else if(this.current_file.getLine(this.line).length() == 0) {
+                this.current_file.setText(Utils.pop(this.current_file.getText(), this.line));
             }
         }
     }
@@ -408,7 +421,7 @@ public class TextArea extends KeyboardListener {
             String fstpart = (this.current_file.getLine(line).length() == 0 || idx == 0 ? "" : this.current_file.getLine(line).substring(0, idx));
             String scpart = (this.current_file.getLine(line).length() == 0 || idx == this.current_file.getLine(line).length() ? "" : this.current_file.getLine(line).substring(idx, this.current_file.getLine(line).length()));
             this.current_file.setLine(line, fstpart + data + scpart);
-            this.move_idx(data.length());
+            this.move_idx(data.length()-1);
         } else if(lines.length > 1) {
             String fstpart = (this.current_file.getLine(line).length() == 0 || idx == 0 ? "" : this.current_file.getLine(line).substring(0, idx));
             String scpart = (this.current_file.getLine(line).length() == 0 || idx == this.current_file.getLine(line).length() ? "" : this.current_file.getLine(line).substring(idx, this.current_file.getLine(line).length()));
@@ -419,67 +432,104 @@ public class TextArea extends KeyboardListener {
                 this.add_empty_line(this.line);
             }
             this.current_file.setLine(this.line, lines[lines.length-1] + scpart);
+            if(lines[lines.length-1].endsWith("\n")) this.add_empty_line(this.line);
         }
     }
 
     private void move_idx(int steps) {
-        if(this.idx+steps > -1 && this.idx+steps < this.current_file.getLine(this.line).length()+1) this.idx+=steps;
+        this.idx+=steps;
+
+        if(this.idx+steps < -1) {
+            //If idx is on the first line, stop it and returm.
+            if(this.line == 0) {
+                this.idx = 0;
+                return;
+            }
+
+            //If the idx is too far off left side, it moves a line up
+            this.move_line(-1);
+            this.idx = this.current_file.getLine(this.line).length();
+        }
+        if(this.idx+steps > this.current_file.getLine(this.line).length()+1) {
+            //If idx is on the last line, stop it and returm.
+            if(this.line == this.current_file.length()-1) {
+                this.idx = this.current_file.getLine(this.line).length();
+                return;
+            }
+
+            //If the idx is too far off right side, it moves a line down
+            this.move_line(1);
+            this.idx = 0;
+        }
         this.idx_target = this.idx;
         this.idx_t = 0;
+    }
+
+    private void move_line(int steps) {
+        //Calculates how many lines currently fit in the canvas.
+        int available_lines = this.current_height/this.LINE_H;
+
+        if(this.line+steps > -1 && this.line+steps < this.current_file.length()) {
+            this.line += steps;
+
+            if(this.line < this.viewY) this.viewY--;
+            if(this.line > this.viewY+available_lines-1) this.viewY++;
+        }
+
+        this.idx_t = 0;
+
+        if(this.idx_target > this.current_file.getLine(this.line).length()) this.idx = this.current_file.getLine(this.line).length();
+        else this.idx = this.idx_target;
+
     }
 
     private void remove_selected() {
 
     }
 
-    private void move_line(int steps) {
-        if(this.line+steps > -1 && this.line+steps < this.current_file.length())this.line += steps;
-        this.idx_t = 0;
-
-        if(this.idx_target > this.current_file.getLine(this.line).length()) this.idx = this.current_file.getLine(this.line).length();
-        else this.idx = this.idx_target;
-
-        if(this.line < this.current_height) this.offsetY--;
-        if(this.line > -1) this.offsetY++;
-    }
-
     private void add_char(String c) {
         String fstpart = (this.current_file.getLine(line).length() == 0 || idx == 0 ? "" : this.current_file.getLine(line).substring(0, idx));
         String scpart = (this.current_file.getLine(line).length() == 0 || idx == this.current_file.getLine(line).length() ? "" : this.current_file.getLine(line).substring(idx, this.current_file.getLine(line).length()));
         this.current_file.setLine(line, fstpart + c + scpart);
-        this.idx++;
+        this.move_idx(1);
     }
 
-    public void openFile(String path) {
-        FileContent file = new FileContent();
-        file.setPath(path);
-        this.current_file = file;
-        this.loadSyntax(this.current_file.getExtension());
+    public void open_file(String path) {
+        this.current_file = new FileContent();
+        this.current_file.setPath(path);
+        this.load_syntax(this.current_file.getExtension());
         this.saved = true;
     }
 
-    public void saveFile() {
+    public void save_file() {
         this.current_file.save();
         this.saved = true;
     }
 
-    private void loadScheme(String name) {
-        String[] file = Utils.readFileByLine("config/schemes/scheme_" + name + ".txt");
+    public void new_file(String path) {
+        this.current_file = new FileContent();
+        this.current_file.setPath(path);
+        this.load_syntax(this.current_file.getExtension());
+        this.saved = false;
+    }
+
+    public void load_scheme(String name) {
+        String[] file = Utils.read_file_by_line("config/schemes/scheme_" + name + ".txt");
         for(String line : file) {
             String[] prop = line.split(" ");
             this.scheme.put(prop[0], new Color(Integer.valueOf(prop[1]), Integer.valueOf(prop[2]), Integer.valueOf(prop[3])));
-            System.out.println(prop[0]);
+            Log.debug(prop[0]);
         }
-        System.out.println("Scheme loaded: " + name);
+        Log.debug("Scheme loaded: " + name);
     }
 
-    private void loadSyntax(String ext) {
+    public void load_syntax(String ext) {
         if(ext.equals("txt")) {
             this.syntax = new Hashtable<>();
             return;
         }
 
-        String[] file = Utils.readFileByLine("config/syntax/syntax_" + ext + ".txt");
+        String[] file = Utils.read_file_by_line("config/syntax/syntax_" + ext + ".txt");
         this.syntax = new Hashtable<>();
         for(int i = 0; i < file.length; i++) {
             String line = file[i];
