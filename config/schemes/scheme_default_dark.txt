@@ -4,6 +4,8 @@ txt_area_idx 255 255 255
 txt_area_font 255 255 255
 txt_area_font_on_idx 46 46 46
 txt_area_selection 0 120 255
+txt_area_num 50 50 50
+txt_area_num_sel 100 100 100
 info_bar_bg 255 255 0
 info_bar_font 0 0 0
 sy_key_words 190 120 0

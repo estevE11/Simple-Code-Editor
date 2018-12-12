@@ -74,6 +74,8 @@ public class TextArea extends KeyboardListener {
         this.current_width = canvas.getWidth();
         this.current_height = canvas.getHeight()-this.LINE_H;
 
+        int num_col_width = (canvas.getFontMetrics(MainCanvas.FONT).stringWidth(String.valueOf(this.current_file.length()))) + this.FONT_W;
+
         if(this.idx < 0) this.idx = 0;
 
         //Log.debug(viewY);
@@ -89,24 +91,31 @@ public class TextArea extends KeyboardListener {
             for (int i = 0; i < diff + 1; i++) {
                 if(this.selec_start.y == this.selec_end.y) {
                     if(this.selec_start.x < this.selec_end.x) {
-                        canvas.fill(OFF_LEFT + this.selec_start.x * this.FONT_W, this.selec_start.y * this.LINE_H + this.offsetY, (this.selec_end.x - this.selec_start.x) * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
+                        canvas.fill(num_col_width + OFF_LEFT + this.selec_start.x * this.FONT_W, this.selec_start.y * this.LINE_H + this.offsetY, (this.selec_end.x - this.selec_start.x) * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
                     }
                     if(this.selec_start.x > this.selec_end.x) {
-                        canvas.fill(OFF_LEFT + (this.selec_start.x+this.FONT_W) * this.FONT_W, this.selec_start.y * this.LINE_H + this.offsetY, (this.selec_end.x - this.selec_start.x) * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
+                        canvas.fill(num_col_width + OFF_LEFT + (this.selec_start.x+this.FONT_W) * this.FONT_W, this.selec_start.y * this.LINE_H + this.offsetY, (this.selec_end.x - this.selec_start.x) * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
                     }
                 } else if(diff > 0) {
-                    canvas.fill(OFF_LEFT + (this.selec_start.x) * this.FONT_W, this.selec_start.y * this.LINE_H + this.offsetY, (this.current_file.getLine(this.selec_start.y).length() - this.selec_start.x) * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
+                    canvas.fill(num_col_width + OFF_LEFT + (this.selec_start.x) * this.FONT_W, this.selec_start.y * this.LINE_H + this.offsetY, (this.current_file.getLine(this.selec_start.y).length() - this.selec_start.x) * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
                     for(int j = this.selec_start.y+1;  j < this.selec_end.y; j++) {
 
-                        canvas.fill(OFF_LEFT, j * this.LINE_H + this.offsetY, this.current_file.getLine(j).length() * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
+                        canvas.fill(num_col_width + OFF_LEFT, j * this.LINE_H + this.offsetY, this.current_file.getLine(j).length() * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
                     }
-                    canvas.fill(OFF_LEFT, this.selec_end.y * this.LINE_H + this.offsetY, this.selec_end.x * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
+                    canvas.fill(num_col_width + OFF_LEFT, this.selec_end.y * this.LINE_H + this.offsetY, this.selec_end.x * this.FONT_W, this.LINE_H, this.scheme.get("txt_area_selection"));
                 }
             }
         }
 
+
+
         //Text
         for(int i = 0; i < this.current_file.length(); i++) {
+            //ROW NUM
+            canvas.fill(0, 0, num_col_width, this.current_height, this.scheme.get("txt_area_num"));
+            if(i == this.line) canvas.fill(0, i * this.LINE_H + this.offsetY, this.FONT_W, this.LINE_H, this.scheme.get("txt_area_num_sel"));
+            canvas.renderText(String.valueOf(i+1), this.FONT_W - this.FONT_W/2, 14 + i * this.LINE_H + this.offsetY, 14, this.scheme.get("txt_area_font"));
+
             String[] line = this.current_file.getLine(i).split(" ");
             String[] words = this.current_file.getLine(i).split("[^a-zA-Z0-9]");
             int len = 0;
@@ -116,7 +125,7 @@ public class TextArea extends KeyboardListener {
                 if(!this.char_comment.equals("") && this.char_comment != null && line[j].substring(0,this.char_comment.length()-1).equals(this.char_comment)){
                     isComment = true;
                 }
-                canvas.renderText(word, OFF_LEFT + len, 14 + i * this.LINE_H + this.offsetY, 14, !isComment ? this.getSyntax(line[j]) : this.scheme.get("sy_comment"));
+                canvas.renderText(word, num_col_width + OFF_LEFT + len, 14 + i * this.LINE_H + this.offsetY, 14, !isComment ? this.getSyntax(line[j]) : this.scheme.get("sy_comment"));
                 len += canvas.calcTextWidth(word);
             }
         }
@@ -126,7 +135,7 @@ public class TextArea extends KeyboardListener {
             canvas.fill((this.idx+1) * this.FONT_W, this.line*this.LINE_H + this.offsetY, 7, this.LINE_H, this.scheme.get("txt_area_idx"));
             if(this.idx < this.current_file.getLine(line).length() && this.current_file.getLine(line) != null && this.current_file.getLine(line).length() > 0){
                 char c = this.current_file.getLine(line).charAt(this.idx);
-                if(!String.valueOf(c).equals(" "))canvas.renderText(String.valueOf(c), OFF_LEFT+this.idx*this.FONT_W, 14+this.line*this.LINE_H + this.offsetY, 14, this.scheme.get("txt_area_font_on_idx"));
+                if(!String.valueOf(c).equals(" "))canvas.renderText(String.valueOf(c), num_col_width + OFF_LEFT+this.idx*this.FONT_W, 14+this.line*this.LINE_H + this.offsetY, 14, this.scheme.get("txt_area_font_on_idx"));
             }
         }
 
@@ -473,7 +482,7 @@ public class TextArea extends KeyboardListener {
             this.line += steps;
 
             if(this.line < this.viewY) this.viewY--;
-            if(this.line > this.viewY+available_lines-1) this.viewY++;
+            if(this.line > this.viewY+available_lines-2) this.viewY++;
         }
 
         this.idx_t = 0;

@@ -9,7 +9,8 @@ public class MainCanvas extends Canvas {
     public static int FLIP_H = 1;
     public static int FLIP_v = 0;
 
-    private String FONT_EDITOR = "Monospaced";
+    private static final String FONT_EDITOR = "Monospaced";
+    public static final Font FONT = new Font(FONT_EDITOR, Font.PLAIN, 14);
 
     private Graphics g;
     private BufferStrategy bs;

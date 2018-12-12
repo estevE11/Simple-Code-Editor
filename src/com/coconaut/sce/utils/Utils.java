@@ -156,6 +156,14 @@ public class Utils {
         return p[p.length-1];
     }
 
+    public static String join(String s[]) {
+        String res = "";
+        for(String _s : s) {
+            res += _s;
+        }
+        return res;
+    }
+
     public static boolean is_numeric(String s) {
         return s.matches("-?\\d+(\\.\\d+)?");
     }
@@ -164,4 +172,13 @@ public class Utils {
         if(x > -1) return true;
         return false;
     }
+
+    /*public static int get_digits(float f) {
+        Log.debug(String.valueOf(f));
+        String[] splitted = String.valueOf(f).split(".");
+        Log.debug(splitted.length);
+        int res = Utils.join(splitted).length() + (splitted.length-1);
+        Log.debug(res);
+        return res;
+    }*/
 }
