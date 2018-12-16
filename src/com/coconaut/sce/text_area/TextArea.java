@@ -109,13 +109,13 @@ public class TextArea extends KeyboardListener {
 
 
 
-        //Text
+        //TextAREA
+        canvas.fill(0, 0, num_col_width, this.current_height, this.scheme.get("txt_area_num_bg"));
         for(int i = 0; i < this.current_file.length(); i++) {
-            //ROW NUM
-            canvas.fill(0, 0, num_col_width, this.current_height, this.scheme.get("txt_area_num"));
-            if(i == this.line) canvas.fill(0, i * this.LINE_H + this.offsetY, this.FONT_W, this.LINE_H, this.scheme.get("txt_area_num_sel"));
-            canvas.renderText(String.valueOf(i+1), this.FONT_W - this.FONT_W/2, 14 + i * this.LINE_H + this.offsetY, 14, this.scheme.get("txt_area_font"));
+            //COL NUM
+            canvas.renderText(String.valueOf(i+1), this.FONT_W - this.FONT_W/2, 14 + i * this.LINE_H + this.offsetY, 14, this.scheme.get("txt_area_num"));
 
+            //TEXT
             String[] line = this.current_file.getLine(i).split(" ");
             String[] words = this.current_file.getLine(i).split("[^a-zA-Z0-9]");
             int len = 0;
@@ -132,7 +132,7 @@ public class TextArea extends KeyboardListener {
 
         //Pointer
         if(idx_t < idx_timing/2 && canvas.hasFocus() && this.onFocus) {
-            canvas.fill((this.idx+1) * this.FONT_W, this.line*this.LINE_H + this.offsetY, 7, this.LINE_H, this.scheme.get("txt_area_idx"));
+            canvas.fill(num_col_width + (this.idx+1) * this.FONT_W, this.line*this.LINE_H + this.offsetY, 7, this.LINE_H, this.scheme.get("txt_area_idx"));
             if(this.idx < this.current_file.getLine(line).length() && this.current_file.getLine(line) != null && this.current_file.getLine(line).length() > 0){
                 char c = this.current_file.getLine(line).charAt(this.idx);
                 if(!String.valueOf(c).equals(" "))canvas.renderText(String.valueOf(c), num_col_width + OFF_LEFT+this.idx*this.FONT_W, 14+this.line*this.LINE_H + this.offsetY, 14, this.scheme.get("txt_area_font_on_idx"));
@@ -158,7 +158,7 @@ public class TextArea extends KeyboardListener {
     }
 
 
-    private void procces_input(String input_char, int keycode, boolean ctrl, boolean shift) {
+    private void procces_input(String input_char, int keycode, boolean ctrl, boolean shift, boolean alt) {
         String to_add = input_char;
         Log.debug(input_char);
         if(ctrl) {
@@ -199,22 +199,19 @@ public class TextArea extends KeyboardListener {
             }
         } else {
             if(shift) {
-                switch(keycode) {
+                switch (keycode) {
+                    //keys for shift
+                }
+            }
+            if(alt) {
+                switch (keycode) {
                     //Arrows
                     case 38:
-                        this.move_selection(0, -1);
+                        this.viewY-=5;
                         to_add = ".Nan.";
                         break;
                     case 40:
-                        this.move_selection(0, 1);
-                        to_add = ".Nan.";
-                        break;
-                    case 37:
-                        this.move_selection(-1, 0);
-                        to_add = ".Nan.";
-                        break;
-                    case 39:
-                        this.move_selection(1, 0);
+                        this.viewY+=5;
                         to_add = ".Nan.";
                         break;
                 }
@@ -289,7 +286,18 @@ public class TextArea extends KeyboardListener {
                     to_add = ".Nan.";
                     break;
             }
-            if(!shift)selec_follow_idx();
+            if(shift) {
+                switch (keycode) {
+                    //Arrows
+                    case 38:
+                    case 40:
+                    case 37:
+                    case 39:
+                        this.update_selection();
+                        to_add = ".Nan.";
+                        break;
+                }
+            } else selec_follow_idx();
         }
 
         Log.debug(to_add);
@@ -297,8 +305,9 @@ public class TextArea extends KeyboardListener {
             if(to_add.equals(".TaB.")) {
                 for (int i = 0; i < 4; i++)
                     this.add_char(" ");
-            } else
+            } else {
                 add_char(to_add);
+            }
             this.saved = false;
         }
 
@@ -313,37 +322,18 @@ public class TextArea extends KeyboardListener {
         this.selec_end = new Point(this.idx, this.line);
     }
 
-    private void move_selection(int x, int y) {
-        if(x != 0 && this.selec_start.x == this.selec_end.x) {
-            if(x > -1) {
-                this.selec_src = this.selec_start;
-                this.selec_end.x+=x;
-            } else {
-                this.selec_src = this.selec_end;
-                this.selec_start.x+=x;
-            }
-        } else if(this.selec_src == this.selec_start) {
-            if(this.selec_end.x+x > -1 && this.selec_end.x+x < this.current_file.getLine(this.line).length()+1)
-                this.selec_end.x+=x;
-        } else if(this.selec_src == this.selec_end) {
-            if(this.selec_start.x+x > -1 && this.selec_start.x+x < this.current_file.getLine(this.line).length()+1)
-                this.selec_start.x+=x;
-        }
+    private void update_selection(int keycode) {
+        switch (keycode) {
+            //Arrows
+            case 38://Up
 
-        if(y != 0 && this.selec_start.y == this.selec_end.y) {
-            if(y > -1) {
-                this.selec_src = this.selec_start;
-                this.selec_end.y+=y;
-            } else {
-                this.selec_src = this.selec_end;
-                this.selec_start.y+=y;
-            }
-        } else if(this.selec_src == this.selec_start) {
-            if(this.selec_end.y+y > -1 && this.selec_end.y+y < this.current_file.length()+1)
-                this.selec_end.y+=y;
-        } else if(this.selec_src == this.selec_end) {
-            if(this.selec_start.y+y > -1 && this.selec_start.y+y < this.current_file.length()+1)
-                this.selec_start.y+=y;
+                break;
+            case 40://Down
+                break;
+            case 37: //Left
+                break;
+            case 39://Right
+                break;
         }
     }
 
@@ -412,7 +402,10 @@ public class TextArea extends KeyboardListener {
 
         if(idx_start.y > idx_end.y) throw new NullPointerException("idx_end must be higher or equal than idx_start.");
 
-        if(idx_start.y == idx_end.y) s = this.current_file.getLine(idx_start.y).substring(idx_start.x, idx_end.x);
+        if(idx_start.y == idx_end.y) {
+            s = this.current_file.getLine(idx_start.y).substring(idx_start.x, idx_end.x);
+            Log.debug(s.length());
+        }
         else {
             s += (this.current_file.getLine(idx_start.y).substring(idx_start.x, this.current_file.getLine(idx_start.y).length()) + "\n");
             for(int i = idx_start.y+1;  i < idx_end.y; i++) {
@@ -430,7 +423,7 @@ public class TextArea extends KeyboardListener {
             String fstpart = (this.current_file.getLine(line).length() == 0 || idx == 0 ? "" : this.current_file.getLine(line).substring(0, idx));
             String scpart = (this.current_file.getLine(line).length() == 0 || idx == this.current_file.getLine(line).length() ? "" : this.current_file.getLine(line).substring(idx, this.current_file.getLine(line).length()));
             this.current_file.setLine(line, fstpart + data + scpart);
-            this.move_idx(data.length()-1);
+            this.move_idx_to_end();
         } else if(lines.length > 1) {
             String fstpart = (this.current_file.getLine(line).length() == 0 || idx == 0 ? "" : this.current_file.getLine(line).substring(0, idx));
             String scpart = (this.current_file.getLine(line).length() == 0 || idx == this.current_file.getLine(line).length() ? "" : this.current_file.getLine(line).substring(idx, this.current_file.getLine(line).length()));
@@ -474,6 +467,10 @@ public class TextArea extends KeyboardListener {
         this.idx_t = 0;
     }
 
+    private void move_idx_to_end() {
+        this.idx = this.current_file.getLine(this.line).length();
+    }
+
     private void move_line(int steps) {
         //Calculates how many lines currently fit in the canvas.
         int available_lines = this.current_height/this.LINE_H;
@@ -481,8 +478,8 @@ public class TextArea extends KeyboardListener {
         if(this.line+steps > -1 && this.line+steps < this.current_file.length()) {
             this.line += steps;
 
-            if(this.line < this.viewY) this.viewY--;
-            if(this.line > this.viewY+available_lines-2) this.viewY++;
+            while(this.line < this.viewY) this.viewY--;
+            while(this.line > this.viewY+available_lines-2) this.viewY++;
         }
 
         this.idx_t = 0;
@@ -561,7 +558,7 @@ public class TextArea extends KeyboardListener {
     }
 
     public void key_pressed(KeyEvent arg0) {
-        if(this.onFocus)this.procces_input(String.valueOf(arg0.getKeyChar()), arg0.getKeyCode(), arg0.isControlDown(), arg0.isShiftDown());
+        if(this.onFocus)this.procces_input(String.valueOf(arg0.getKeyChar()), arg0.getKeyCode(), arg0.isControlDown(), arg0.isShiftDown(), arg0.isAltDown());
     }
 
     public void key_released(KeyEvent arg0) {
