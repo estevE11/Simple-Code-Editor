@@ -11,4 +11,8 @@ public class CommandOpenFile extends Command {
     public void exec(String args[]) {
         this.text_area.open_file(args[0]);
     }
+
+    public String baseInput() {
+        return System.getProperty("user.dir");
+    }
 }

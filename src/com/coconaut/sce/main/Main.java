@@ -78,7 +78,7 @@ public class Main implements Runnable {
         this.frame.setMinimumSize(new Dimension(this.WIDTH, this.HEIGHT));
 
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setLocation(10, 10);
+        this.frame.setLocationRelativeTo(null);
         this.frame.setResizable(this.frame_resizeable);
         this.frame.setVisible(true);
 

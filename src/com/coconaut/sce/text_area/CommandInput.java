@@ -81,6 +81,7 @@ public class CommandInput extends KeyboardListener {
             this.command = cmd;
             this.onFocus = true;
             this.text_area.setFocus(false);
+            this.input = this.command.baseInput();
             return;
         }
         this.onFocus = false;

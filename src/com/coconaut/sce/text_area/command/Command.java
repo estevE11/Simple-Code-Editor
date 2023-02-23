@@ -15,6 +15,10 @@ public class Command {
 
     }
 
+    public String baseInput() {
+        return "";
+    }
+
     public String getName() {
         return this.name;
     }

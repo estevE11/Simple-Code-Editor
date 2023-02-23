@@ -293,7 +293,7 @@ public class TextArea extends KeyboardListener {
                     case 40:
                     case 37:
                     case 39:
-                        this.update_selection();
+                        //this.update_selection();
                         to_add = ".Nan.";
                         break;
                 }
